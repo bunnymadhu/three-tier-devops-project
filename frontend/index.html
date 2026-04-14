@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DevOps 3 Tier App</title>
+</head>
+<body>
+    <h1>Welcome to 3 Tier DevOps Project</h1>
+    <p>Frontend running successfully</p>
+
+    <button onclick="getMessage()">Get Backend Message</button>
+
+    <p id="response"></p>
+
+<script>
+function getMessage() {
+ fetch("http://backend-service/message")
+   .then(res => res.json())
+   .then(data => {
+     document.getElementById("response").innerText = data.message
+   })
+}
+</script>
+
+</body>
+</html>
