@@ -39,10 +39,9 @@ jobs:
       - name: Test Kubernetes
         run: kubectl get nodes
           
-      - name: Create Namespace
+      - name: Ensure Namespace
         run: |
-         kubectl apply -f k8s/namespace.yaml
-         kubectl wait --for=condition=Established namespace/three-tier --timeout=60s
+          kubectl create namespace three-tier --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy Application
         run: kubectl apply -f k8s/
