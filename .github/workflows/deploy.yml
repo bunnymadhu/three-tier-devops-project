@@ -29,14 +29,23 @@ jobs:
           docker push bunnymadhu/frontend:latest
           docker push bunnymadhu/backend:latest
 
+      # - name: Setup kubeconfig
+      #   run: |
+      #     mkdir -p $HOME/.kube
+      #     echo "${{ secrets.KUBE_CONFIG_B64 }}" | base64 --decode > $HOME/.kube/config
+
       - name: Setup kubeconfig
         run: |
           mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG_B64 }}" | base64 --decode > $HOME/.kube/config
+          cp /home/admin/.kube/config $HOME/.kube/config
 
       - name: Test Kubernetes
         run: kubectl get nodes
           
-      - name: Deploy to Kubernetes
+      - name: Create Namespace
         run: |
-          kubectl apply -f k8s/
+         kubectl apply -f k8s/namespace.yaml
+         kubectl wait --for=condition=Established namespace/three-tier --timeout=60s
+
+      - name: Deploy Application
+        run: kubectl apply -f k8s/

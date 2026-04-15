@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 from pymongo import MongoClient
 
 app = Flask(__name__)
@@ -7,15 +7,22 @@ client = MongoClient("mongodb://mongodb-service:27017/")
 db = client["devopsdb"]
 collection = db["messages"]
 
-@app.route("/message")
-def message():
-    data = collection.find_one()
+@app.route("/message", methods=["GET"])
+def get_messages():
 
-    if not data:
-        collection.insert_one({"msg":"Hello from Backend + MongoDB"})
-        data = collection.find_one()
+    data=list(collection.find({},{"_id":0}))
 
-    return jsonify({"message": data["msg"]})
+    return jsonify(data)
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+@app.route("/message", methods=["POST"])
+def add_message():
+
+    msg=request.json["msg"]
+
+    collection.insert_one({"msg":msg})
+
+    return jsonify({"status":"saved"})
+
+
+if __name__=="__main__":
+    app.run(host="0.0.0.0",port=5000)
