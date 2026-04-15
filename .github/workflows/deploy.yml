@@ -34,10 +34,7 @@ jobs:
       #     mkdir -p $HOME/.kube
       #     echo "${{ secrets.KUBE_CONFIG_B64 }}" | base64 --decode > $HOME/.kube/config
 
-      - name: Setup kubeconfig
-        run: |
-          mkdir -p $HOME/.kube
-          cp /home/admin/.kube/config $HOME/.kube/config
+    
 
       - name: Test Kubernetes
         run: kubectl get nodes
